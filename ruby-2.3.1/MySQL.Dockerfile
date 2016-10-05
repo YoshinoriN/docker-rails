@@ -8,12 +8,13 @@ RUN apk update --no-cache \
 
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN bundle install --without development test
 
 ENV RAILS_ENV production
-RUN bundle exec rake db:create
-RUN bundle exec rake db:migrate
-RUN bundle exec rake assets:precompile
+
+RUN bundle install --without development test \
+  && bundle exec rake db:create \
+  && bundle exec rake db:migrate \
+  && bundle exec rake assets:precompile
 
 EXPOSE 3000
 CMD ["bundle", "exec", "unicorn", "-c", "config/unicorn.rb", "-b", "0.0.0.0" ]
